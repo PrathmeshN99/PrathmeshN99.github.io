@@ -1,89 +1,1216 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/761e4c8e5c.js" crossorigin="anonymous"></script>
-    <title>Portfolio</title>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prathmesh Nagpure | Software Engineer</title>
+    <meta
+      name="description"
+      content="Portfolio of Prathmesh Nagpure, Software Engineer at HSBC."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <style>
+      /* --- VARIABLES & RESET --- */
+      :root {
+        --bg-color: #030305;
+        --surface-color: #0f0f11;
+        --primary: #6366f1; /* Indigo */
+        --secondary: #d946ef; /* Fuchsia */
+        --accent: #06b6d4; /* Cyan */
+        --text-main: #ffffff;
+        --text-muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.06);
+        --glass: rgba(15, 15, 17, 0.7);
+        --transition: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        /* Enhanced deep radial gradient for better depth */
+        background-image: radial-gradient(
+            circle at 15% 50%,
+            rgba(99, 102, 241, 0.15),
+            transparent 40%
+          ),
+          radial-gradient(
+            circle at 85% 30%,
+            rgba(217, 70, 239, 0.15),
+            transparent 40%
+          );
+        color: var(--text-main);
+        font-family: "Space Grotesk", sans-serif;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      /* --- UNIQUE FEATURE: NOISE TEXTURE --- */
+      .noise-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.04;
+        background: url("https://grainy-gradients.vercel.app/noise.svg");
+      }
+
+      /* --- SCROLL PROGRESS --- */
+      #progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--primary),
+          var(--secondary),
+          var(--accent)
+        );
+        z-index: 1002;
+        width: 0%;
+        transition: width 0.1s;
+        box-shadow: 0 0 10px var(--primary);
+      }
+
+      /* --- BACKGROUND CANVAS --- */
+      #canvas-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      /* --- LAYOUT UTILITIES --- */
+      .container {
+        max-width: 1300px;
+        margin: 0 auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 1;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: 0.3s;
+      }
+
+      /* --- HEADER --- */
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        padding: 1.5rem 0;
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        transition: 0.3s;
+      }
+      header.scrolled {
+        padding: 1rem 0;
+        background: rgba(3, 3, 5, 0.85);
+        border-bottom-color: var(--border);
+      }
+
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .logo {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+        letter-spacing: -1px;
+      }
+      .logo span {
+        color: var(--accent);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 2.5rem;
+      }
+      .nav-links a {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        position: relative;
+      }
+      .nav-links a:hover {
+        color: var(--text-main);
+      }
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -5px;
+        width: 0;
+        height: 1px;
+        background: var(--accent);
+        transition: 0.3s;
+      }
+      .nav-links a:hover::after {
+        width: 100%;
+      }
+
+      /* --- HERO --- */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 60px;
+      }
+      .hero-content {
+        max-width: 950px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        color: var(--primary);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        animation: fadeUp 0.8s forwards 0.2s;
+      }
+
+      h1 {
+        font-size: 5.5rem;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        opacity: 0;
+        animation: fadeUp 0.8s forwards 0.4s;
+        letter-spacing: -2.5px;
+      }
+      .gradient-text {
+        background: linear-gradient(to right, #fff 20%, #94a3b8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .typewriter {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--accent);
+        font-size: 1.6rem;
+        height: 1.5em;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        animation: fadeUp 0.8s forwards 0.6s;
+        margin-bottom: 2rem;
+      }
+      .cursor-blink {
+        animation: blink 1s infinite;
+        margin-left: 2px;
+        color: var(--text-muted);
+      }
+
+      .cta-group {
+        display: flex;
+        gap: 1.5rem;
+        opacity: 0;
+        animation: fadeUp 0.8s forwards 0.8s;
+        flex-wrap: wrap;
+      }
+
+      .btn-glow {
+        padding: 1rem 2.2rem;
+        background: var(--text-main);
+        color: var(--bg-color);
+        border-radius: 4px;
+        font-weight: 700;
+        position: relative;
+        overflow: hidden;
+        transition: 0.4s var(--transition);
+        z-index: 1;
+      }
+      .btn-glow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.25);
+      }
+
+      .btn-outline {
+        padding: 1rem 2.2rem;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        border-radius: 4px;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+      .btn-outline:hover {
+        border-color: var(--text-main);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      /* --- SECTIONS --- */
+      /* Increased padding for larger gaps between sections */
+      section {
+        padding: 10rem 0;
+      }
+      .section-header {
+        margin-bottom: 4rem;
+      }
+      .section-title {
+        font-size: 2.8rem;
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-bottom: 0.5rem;
+      }
+
+      /* --- EXPERIENCE (Minimalist) --- */
+      .timeline {
+        border-left: 1px solid var(--border);
+        margin-left: 0.5rem;
+        padding-left: 3rem;
+      }
+      .timeline-item {
+        position: relative;
+        margin-bottom: 4.5rem;
+      }
+      .timeline-item:last-child {
+        margin-bottom: 0;
+      }
+      .timeline-dot {
+        position: absolute;
+        left: -3.4rem;
+        top: 0.4rem;
+        width: 0.8rem;
+        height: 0.8rem;
+        background: var(--bg-color);
+        border: 1px solid var(--text-muted);
+        border-radius: 50%;
+        transition: 0.3s;
+        z-index: 10;
+      }
+      .timeline-item:hover .timeline-dot {
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 0 15px var(--accent);
+      }
+
+      .job-card {
+        transition: 0.3s;
+      }
+      .job-role {
+        font-size: 1.6rem;
+        color: var(--text-main);
+        margin-bottom: 0.2rem;
+        font-weight: 600;
+      }
+      .job-company {
+        color: var(--primary);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 1rem;
+      }
+      .job-date {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+        display: block;
+        margin-top: 0.5rem;
+      }
+      .job-details li {
+        color: var(--text-muted);
+        margin-bottom: 0.6rem;
+        list-style: none;
+        position: relative;
+        padding-left: 1.2rem;
+        font-size: 1.05rem;
+      }
+      .job-details li::before {
+        content: ">";
+        color: var(--secondary);
+        position: absolute;
+        left: 0;
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 0.8rem;
+        top: 4px;
+      }
+
+      /* --- SKILLS GRID --- */
+      .skills-category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .skill-group {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        padding: 2.5rem 2rem;
+        transition: 0.3s;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+      }
+      .skill-group:hover {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+      }
+
+      .skill-group h3 {
+        color: var(--text-main);
+        font-family: "JetBrains Mono", monospace;
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+      }
+      .skill-pill {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 0.4rem 0.9rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        border: 1px solid transparent;
+        transition: 0.3s;
+      }
+      .skill-pill:hover {
+        border-color: var(--secondary);
+        color: var(--secondary);
+        background: rgba(217, 70, 239, 0.05);
+      }
+
+      /* --- PROJECTS (Cards) --- */
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+      }
+
+      .project-card {
+        background: var(--surface-color);
+        padding: 2rem;
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+          border-color 0.3s;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      .project-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--accent);
+      }
+
+      .folder-icon {
+        font-size: 1.8rem;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+      }
+      .project-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .project-desc {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+        flex-grow: 1;
+        line-height: 1.6;
+      }
+      .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-top: auto;
+        border-top: 1px solid var(--border);
+        padding-top: 1.2rem;
+      }
+      .tech-pill {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.7rem;
+        color: var(--text-main);
+        opacity: 0.7;
+      }
+
+      /* --- ACHIEVEMENTS --- */
+      .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+      }
+      .achievement-card {
+        background: linear-gradient(
+          145deg,
+          rgba(255, 255, 255, 0.02),
+          transparent
+        );
+        padding: 2.5rem;
+        border: 1px solid var(--border);
+        transition: 0.3s;
+      }
+      .achievement-card:hover {
+        border-color: var(--secondary);
+      }
+      .achievement-icon {
+        font-size: 1.8rem;
+        color: var(--secondary);
+        margin-bottom: 1.2rem;
+      }
+      .achievement-card h4 {
+        font-size: 1.3rem;
+        color: var(--text-main);
+        margin-bottom: 0.8rem;
+      }
+      .achievement-card p {
+        color: var(--text-muted);
+        font-size: 1rem;
+      }
+
+      /* --- CONTACT SECTION --- */
+      .contact-section {
+        background: linear-gradient(to top, rgba(5, 5, 5, 1), rgba(5, 5, 5, 0));
+        border-top: 1px solid var(--border);
+        padding-bottom: 6rem;
+      }
+      .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 4rem;
+      }
+      .contact-card {
+        background: var(--glass);
+        border: 1px solid var(--border);
+        padding: 3rem 2rem;
+        text-align: center;
+        transition: 0.3s;
+        backdrop-filter: blur(10px);
+      }
+      .contact-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2);
+      }
+      .contact-card i {
+        font-size: 2.5rem;
+        color: var(--primary);
+        margin-bottom: 1.5rem;
+      }
+      .contact-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--text-main);
+      }
+      .contact-card p {
+        color: var(--text-muted);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+      }
+
+      /* --- FOOTER --- */
+      footer {
+        padding: 4rem 0;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        background: #010101;
+      }
+
+      /* --- ANIMATIONS --- */
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+      }
+      .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* --- RESPONSIVE --- */
+      @media (max-width: 1200px) {
+        .project-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 3.5rem;
+        }
+        .nav-links {
+          display: none;
+        }
+        .project-grid {
+          grid-template-columns: 1fr;
+        }
+        .timeline {
+          padding-left: 2rem;
+        }
+        .timeline-dot {
+          left: -2.45rem;
+        }
+        section {
+          padding: 6rem 0;
+        } /* Slightly smaller gaps on mobile */
+      }
+    </style>
   </head>
   <body>
-      <section class="hero">
-          <nav>
-              <img class="logo" src="images/logo.png" alt="Prathmesh's logo"/>
-              <ul id="nav-list">
-                  <li><a href="#about-me">About me</a></li>
-                  <li><a href="#projects">Projects</a></li>
-                  <li><a href="#contact-me">Contact</a></li>
-              </ul>
-              <button class="hamburger" id="hamburger">
-                  <i class="fas fa-bars"></i>
-              </button>
-          </nav>
-          <div class="hero-area">
-            <div class="hero-text">
-                <h1>Prathmesh Nagpure</h1>
-                <p>Software Developer</p>
-                <div class="button"><a href="#about-me">About me</a></div>
+    <div class="noise-overlay"></div>
+    <div id="progress-bar"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <header>
+      <div class="container">
+        <nav>
+          <div class="logo">PN<span>.</span></div>
+          <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#experience">Experience</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Work</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero container">
+      <div class="hero-content">
+        <span class="badge">Open to Work</span>
+        <h1>
+          Hi, I'm <br />
+          <span class="gradient-text">Prathmesh Nagpure</span>
+        </h1>
+
+        <div class="typewriter">
+          I build&nbsp;<span id="typing-text"></span
+          ><span class="cursor-blink">_</span>
+        </div>
+
+        <p
+          style="
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-size: 1.15rem;
+            max-width: 650px;
+            opacity: 0;
+            animation: fadeUp 0.8s forwards 0.7s;
+            line-height: 1.8;
+          "
+        >
+          Software Engineer at <strong>HSBC</strong>. Specialist in Backend
+          Engineering, Automation, and Scalable Architecture. Transforming
+          complex manual workflows into efficient, automated systems.
+        </p>
+        <div class="cta-group">
+          <a href="#projects" class="btn-glow">View Projects</a>
+          <a href="#contact" class="btn-outline">Contact Me</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="container reveal">
+      <div class="section-header">
+        <h2 class="section-title">About Me</h2>
+      </div>
+      <div
+        style="
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 4rem;
+          color: var(--text-muted);
+          font-size: 1.15rem;
+          line-height: 1.8;
+        "
+      >
+        <div>
+          <p style="margin-bottom: 2rem">
+            I am a Computer Engineering graduate from
+            <strong>VIT Pune (8.85 CGPA)</strong> with a specific focus on
+            backend performance and system optimization. Currently, as a
+            Software Engineer at <strong>HSBC</strong>, I bridge the gap between
+            development and operations.
+          </p>
+          <p style="margin-bottom: 2rem">
+            My technical approach is grounded in efficiency. Whether it's
+            designing a <strong>FastAPI</strong> microservice or writing a
+            complex <strong>SQL</strong> query for data analysis, I prioritize
+            clean, maintainable, and high-performance code.
+          </p>
+          <p>
+            I have solved over <strong>500+ algorithmic problems</strong>, which
+            keeps my problem-solving skills sharp for real-world engineering
+            challenges.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience" class="container">
+      <div class="section-header reveal">
+        <h2 class="section-title">Experience</h2>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="job-card">
+            <div class="job-role">Software Engineer</div>
+            <div class="job-company">HSBC Global • Pune, India</div>
+            <span class="job-date">July 2024 - Present</span>
+            <ul class="job-details">
+              <li>
+                Developing backend services and automation workflows using
+                <strong>Python, TypeScript/Next.js, and SQL</strong>.
+              </li>
+              <li>
+                Automated recurring release activities with Python & Selenium,
+                reducing manual effort by <strong>80%</strong>.
+              </li>
+              <li>
+                Diagnosed system and data discrepancies by tracing flows across
+                source systems and ETL pipelines.
+              </li>
+              <li>
+                Built internal tools using Docker and Python for deployment
+                validation and job monitoring.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="job-card">
+            <div class="job-role">Software Engineer Intern</div>
+            <div class="job-company">Opsnetic • Remote</div>
+            <span class="job-date">Jan 2024 - Jun 2024</span>
+            <ul class="job-details">
+              <li>
+                Built a Slack bot using <strong>Bolt.js and MongoDB</strong> for
+                activity tracking, boosting engagement by 60%.
+              </li>
+              <li>
+                Created a Next.js blog module with RSS feed integration and
+                NestJS, improving visibility by 40%.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="job-card">
+            <div class="job-role">Software Developer Intern</div>
+            <div class="job-company">Parallel Dots • Remote</div>
+            <span class="job-date">Feb 2023 - May 2023</span>
+            <ul class="job-details">
+              <li>
+                Automated data workflows in Python using
+                <strong>Numpy and Pandas</strong>, reducing processing effort by
+                90%.
+              </li>
+              <li>
+                Optimized SQL queries, improving report generation speed by 30%.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="container reveal">
+      <div class="section-header">
+        <h2 class="section-title">Tech Stack</h2>
+      </div>
+
+      <div class="skills-category-grid">
+        <div class="skill-group">
+          <h3>Languages</h3>
+          <div class="skill-tags">
+            <span class="skill-pill">Python</span>
+            <span class="skill-pill">Java</span>
+            <span class="skill-pill">Node.js</span>
+            <span class="skill-pill">TypeScript</span>
+            <span class="skill-pill">C++</span>
+            <span class="skill-pill">SQL</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3>Backend & Web</h3>
+          <div class="skill-tags">
+            <span class="skill-pill">FastAPI</span>
+            <span class="skill-pill">Django</span>
+            <span class="skill-pill">NestJS</span>
+            <span class="skill-pill">REST APIs</span>
+            <span class="skill-pill">React</span>
+            <span class="skill-pill">Next.js</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3>Data & Storage</h3>
+          <div class="skill-tags">
+            <span class="skill-pill">PostgreSQL</span>
+            <span class="skill-pill">MySQL</span>
+            <span class="skill-pill">MongoDB</span>
+            <span class="skill-pill">SQLite</span>
+            <span class="skill-pill">Pandas</span>
+          </div>
+        </div>
+
+        <div class="skill-group">
+          <h3>DevOps & Tools</h3>
+          <div class="skill-tags">
+            <span class="skill-pill">Docker</span>
+            <span class="skill-pill">GitHub Actions</span>
+            <span class="skill-pill">Git</span>
+            <span class="skill-pill">Selenium</span>
+            <span class="skill-pill">JWT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="container">
+      <div class="section-header reveal">
+        <h2 class="section-title">Selected Work</h2>
+      </div>
+      <div class="project-grid">
+        <div class="project-card reveal">
+          <div class="folder-icon"><i class="fas fa-layer-group"></i></div>
+          <h3 class="project-title">SenseFast Automation</h3>
+          <p class="project-desc">
+            Engineered an end-to-end deployment platform eliminating manual
+            workflows. Implemented pipelines for automated backup, versioning,
+            CR validation, and execution.
+          </p>
+          <div class="project-tech">
+            <span class="tech-pill">FastAPI</span>
+            <span class="tech-pill">Next.js</span>
+            <span class="tech-pill">GitHub API</span>
+          </div>
+        </div>
+
+        <div class="project-card reveal">
+          <div class="folder-icon"><i class="fas fa-comment-alt"></i></div>
+          <h3 class="project-title">Record Comments</h3>
+          <p class="project-desc">
+            Created a custom dashboard extension enabling 1,000+ users to add
+            comments directly without developer access. Built a secure NestJS
+            backend.
+          </p>
+          <div class="project-tech">
+            <span class="tech-pill">NestJS</span>
+            <span class="tech-pill">MySQL</span>
+            <span class="tech-pill">Express.js</span>
+          </div>
+        </div>
+
+        <a
+          href="https://github.com/PrathmeshN99/Health_Monitoring_Dashboard"
+          target="_blank"
+        >
+          <div class="project-card reveal">
+            <div class="folder-icon"><i class="fas fa-heartbeat"></i></div>
+            <h3 class="project-title">Health Dashboard</h3>
+            <p class="project-desc">
+              Interactive dashboard interface designed to track and display
+              health metrics visually with real-time updates.
+            </p>
+            <div class="project-tech">
+              <span class="tech-pill">HTML5</span>
+              <span class="tech-pill">CSS3</span>
+              <span class="tech-pill">JS</span>
             </div>
-            <div class="socials">
-                <div><a href="https://github.com/PrathmeshN99"  class="social">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="50" height="50" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </a></div>
-                <div><a href="https://www.linkedin.com/in/prathmesh-nagpure-252853221/"  class="social">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="#ffffff" width="50" height="50" viewBox="0 0 24 24"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg>
-                </a></div>
+          </div>
+        </a>
+
+        <a
+          href="https://github.com/PrathmeshN99/College_Searcher"
+          target="_blank"
+        >
+          <div class="project-card reveal">
+            <div class="folder-icon"><i class="fas fa-university"></i></div>
+            <h3 class="project-title">College Searcher</h3>
+            <p class="project-desc">
+              A data-driven Python tool assisting students in filtering and
+              finding colleges based on specific criteria like cutoffs and
+              location.
+            </p>
+            <div class="project-tech">
+              <span class="tech-pill">Python</span>
+              <span class="tech-pill">Pandas</span>
             </div>
           </div>
-      </section>
-      <section class="sub-section" id="about-me">
-          <div class="information">
-              <h2>About Me</h2>
-              <p>Hey, this is Prathmesh Nagpure. I am a back-end developer and data science enthusiast.</p>
+        </a>
+      </div>
+    </section>
+
+    <section id="achievements" class="container reveal">
+      <div class="section-header">
+        <h2 class="section-title">Achievements</h2>
+      </div>
+      <div class="achievements-grid">
+        <div class="achievement-card">
+          <div class="achievement-icon"><i class="fas fa-trophy"></i></div>
+          <h4>Coding Excellence</h4>
+          <p>
+            Solved 500+ problems on coding platforms like LeetCode and
+            GeeksforGeeks.
+          </p>
+        </div>
+        <div class="achievement-card">
+          <div class="achievement-icon"><i class="fas fa-users-cog"></i></div>
+          <h4>Team Quark Leadership</h4>
+          <p>
+            Hosted technical events promoting innovation and teamwork as a Core
+            Team member.
+          </p>
+        </div>
+        <div class="achievement-card">
+          <div class="achievement-icon"><i class="fas fa-globe"></i></div>
+          <h4>VIT Pune MUN</h4>
+          <p>
+            Served as Research Head, leading research initiatives for Model
+            United Nations simulations.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+      <div class="container reveal">
+        <div class="section-header" style="text-align: center">
+          <h2 class="section-title">Get In Touch</h2>
+          <p
+            style="
+              color: var(--text-muted);
+              max-width: 500px;
+              margin: 0 auto;
+              font-size: 1.1rem;
+              margin-top: 1rem;
+            "
+          >
+            I am currently open to new opportunities. Feel free to reach out via
+            phone or email.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <i class="fas fa-envelope"></i>
+            <h3>Email</h3>
+            <p>
+              <a href="mailto:prathmesh99.pn@gmail.com"
+                >prathmesh99.pn@gmail.com</a
+              >
+            </p>
           </div>
-          <div class="headshot-container">
-              <img class="headshot" src="images/Prathmesh-Nagpure.jpg" alt="Ania kubow headshot"/>
+          <div class="contact-card">
+            <i class="fas fa-phone-alt"></i>
+            <h3>Phone</h3>
+            <p>+91 9423970778</p>
           </div>
-      </section>
-      <section class="sub-section-alternative" id="projects">
-          <h2>Projects</h2>
-          <div class="project-container">
-              <div class="project-card">
-                  <img class="project-image" src="images/search_college2_resized.png" alt="Project One Image"/>
-                  <h3>College Searcher</h3>
-                  <p class="subtext">Developed a website displaying college sorted and filtered by college preferences and one's percentile score.</p>
-                  <hr/>
-                  <p class="subtext"><a class="project-link" href="https://github.com/PrathmeshN99/College_Searcher">View here</a></p>
-              </div>
-              <div class="project-card">
-                <img class="project-image" src="images/cricket1_resized.jpg" alt="Project One Image"/>
-                <h3>Runs Predictor</h3>
-                <p class="subtext">Created a batsman runs predictor website by employing various machine learning algorithms and data mining.</p>
-                <hr/>
-                <p class="subtext"><a class="project-link" href="https://github.com/PrathmeshN99/Cricket-Batsman-Runs-Predictor">View here</a></p>
-              </div>
-              <div class="project-card">
-                <img class="project-image" src="images/app1_resized.jpeg" alt="Project One Image"/>
-                <h3>Meet-e-Mate</h3>
-                <p class="subtext">It is a platform providing a friendly interface for students to join lectures on time by sending alert notifications before every lecture.</p>
-                <hr/>
-                <p class="subtext"><a class="project-link" href="https://github.com/PrathmeshN99/Meet-e-Mate">View here</a></p>
-              </div>
-              <div class="project-card">
-                <img class="project-image" src="images/medical_history2_resized.png" alt="Project One Image"/>
-                <h3>Medical History Keeper</h3>
-                <p class="subtext">Stored medical history of students in database and performed CRUD operations.</p>
-                <hr/>
-                <p class="subtext"><a class="project-link" href="https://github.com/PrathmeshN99/Medical_History_Website">View here</a></p>
-              </div>
+          <div class="contact-card">
+            <i class="fab fa-linkedin-in"></i>
+            <h3>LinkedIn</h3>
+            <p>
+              <a
+                href="https://linkedin.com/in/PrathmeshNagpure/"
+                target="_blank"
+                >Connect Profile</a
+              >
+            </p>
           </div>
-      </section>
-      <footer id="contact-me">
-          <h2>Contact me</h2>
-          <p>prathmesh99.pn@gmail.com</p>
-      </footer>
-    <script src="app.js"></script>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="container">
+        <p>Designed & Built by Prathmesh Nagpure &copy; 2025</p>
+        <div
+          style="
+            margin-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 1.2rem;
+          "
+        >
+          <a href="https://github.com/PrathmeshN99"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a href="https://linkedin.com/in/PrathmeshNagpure/"
+            ><i class="fab fa-linkedin"></i
+          ></a>
+          <a href="mailto:prathmesh99.pn@gmail.com"
+            ><i class="fas fa-envelope"></i
+          ></a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // 1. TYPING EFFECT
+      const textElement = document.getElementById("typing-text");
+      const words = [
+        "scalable backends.",
+        "automation tools.",
+        "resilient systems.",
+        "microservices.",
+      ];
+      let wordIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+
+      function type() {
+        const currentWord = words[wordIndex];
+        if (isDeleting) {
+          textElement.textContent = currentWord.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          textElement.textContent = currentWord.substring(0, charIndex + 1);
+          charIndex++;
+        }
+
+        if (!isDeleting && charIndex === currentWord.length) {
+          isDeleting = true;
+          setTimeout(type, 2000);
+        } else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          wordIndex = (wordIndex + 1) % words.length;
+          setTimeout(type, 500);
+        } else {
+          setTimeout(type, isDeleting ? 50 : 100);
+        }
+      }
+      document.addEventListener("DOMContentLoaded", type);
+
+      // 2. SCROLL REVEAL & PROGRESS
+      window.addEventListener("scroll", () => {
+        const reveals = document.querySelectorAll(".reveal");
+        const windowHeight = window.innerHeight;
+        const elementVisible = 100;
+
+        reveals.forEach((reveal) => {
+          const elementTop = reveal.getBoundingClientRect().top;
+          if (elementTop < windowHeight - elementVisible) {
+            reveal.classList.add("active");
+          }
+        });
+
+        // Progress Bar
+        const winScroll =
+          document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("progress-bar").style.width = scrolled + "%";
+
+        // Header
+        const header = document.querySelector("header");
+        header.classList.toggle("scrolled", window.scrollY > 50);
+      });
+
+      // 3. IMPROVED CANVAS BACKGROUND (Interactive Network)
+      const canvas = document.getElementById("canvas-bg");
+      const ctx = canvas.getContext("2d");
+      let particlesArray;
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      let mouse = {
+        x: null,
+        y: null,
+        radius: (canvas.height / 80) * (canvas.width / 80),
+      };
+
+      window.addEventListener("mousemove", function (event) {
+        mouse.x = event.x;
+        mouse.y = event.y;
+      });
+      window.addEventListener("mouseout", function () {
+        mouse.x = undefined;
+        mouse.y = undefined;
+      });
+
+      class Particle {
+        constructor(x, y, directionX, directionY, size, color) {
+          this.x = x;
+          this.y = y;
+          this.directionX = directionX;
+          this.directionY = directionY;
+          this.size = size;
+          this.color = color;
+        }
+        draw() {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        }
+        update() {
+          if (this.x > canvas.width || this.x < 0)
+            this.directionX = -this.directionX;
+          if (this.y > canvas.height || this.y < 0)
+            this.directionY = -this.directionY;
+
+          // Check collision detection - mouse position / particle position
+          let dx = mouse.x - this.x;
+          let dy = mouse.y - this.y;
+          let distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < mouse.radius + this.size) {
+            if (mouse.x < this.x && this.x < canvas.width - this.size * 10) {
+              this.x += 10;
+            }
+            if (mouse.x > this.x && this.x > this.size * 10) {
+              this.x -= 10;
+            }
+            if (mouse.y < this.y && this.y < canvas.height - this.size * 10) {
+              this.y += 10;
+            }
+            if (mouse.y > this.y && this.y > this.size * 10) {
+              this.y -= 10;
+            }
+          }
+
+          this.x += this.directionX;
+          this.y += this.directionY;
+          this.draw();
+        }
+      }
+
+      function init() {
+        particlesArray = [];
+        let numberOfParticles = (canvas.height * canvas.width) / 10000;
+        for (let i = 0; i < numberOfParticles; i++) {
+          let size = Math.random() * 2 + 0.1;
+          let x = Math.random() * (innerWidth - size * 2 - size * 2) + size * 2;
+          let y =
+            Math.random() * (innerHeight - size * 2 - size * 2) + size * 2;
+          let directionX = Math.random() * 0.4 - 0.2;
+          let directionY = Math.random() * 0.4 - 0.2;
+
+          // Randomly assign colors (Cyan or Indigo)
+          let color =
+            Math.random() > 0.5
+              ? "rgba(99, 102, 241, 0.6)"
+              : "rgba(6, 182, 212, 0.6)";
+
+          particlesArray.push(
+            new Particle(x, y, directionX, directionY, size, color)
+          );
+        }
+      }
+
+      function connect() {
+        let opacityValue = 1;
+        for (let a = 0; a < particlesArray.length; a++) {
+          for (let b = a; b < particlesArray.length; b++) {
+            let distance =
+              (particlesArray[a].x - particlesArray[b].x) *
+                (particlesArray[a].x - particlesArray[b].x) +
+              (particlesArray[a].y - particlesArray[b].y) *
+                (particlesArray[a].y - particlesArray[b].y);
+            if (distance < (canvas.width / 7) * (canvas.height / 7)) {
+              opacityValue = 1 - distance / 20000;
+
+              let gradient = ctx.createLinearGradient(
+                particlesArray[a].x,
+                particlesArray[a].y,
+                particlesArray[b].x,
+                particlesArray[b].y
+              );
+              gradient.addColorStop(0, particlesArray[a].color);
+              gradient.addColorStop(1, particlesArray[b].color);
+
+              ctx.strokeStyle = gradient;
+              ctx.lineWidth = 0.5;
+              ctx.globalAlpha = opacityValue * 0.3;
+              ctx.beginPath();
+              ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+              ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+              ctx.stroke();
+              ctx.globalAlpha = 1;
+            }
+          }
+        }
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        ctx.clearRect(0, 0, innerWidth, innerHeight);
+        for (let i = 0; i < particlesArray.length; i++) {
+          particlesArray[i].update();
+        }
+        connect();
+      }
+
+      window.addEventListener("resize", () => {
+        canvas.width = innerWidth;
+        canvas.height = innerHeight;
+        init();
+      });
+
+      init();
+      animate();
+    </script>
   </body>
 </html>
